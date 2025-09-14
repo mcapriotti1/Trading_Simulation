@@ -1,6 +1,4 @@
 #include "value_investor_bot.hpp"
-#include <algorithm>
-#include <cmath>
 
 ValueInvestorBot::ValueInvestorBot(int id_) 
   : Bot(id_),

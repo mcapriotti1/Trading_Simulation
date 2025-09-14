@@ -1,5 +1,9 @@
 #include "bot.hpp"
 #include "value_investor_bot.hpp"
+#include "trend_follower_bot.hpp"
+#include "stop_loss_bot.hpp"
+#include "market_maker_bot.hpp"
+#include "noise_bot.hpp"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -7,12 +11,11 @@
 
 void createBots(int numBots, std:: vector<Bot*>& bots, std::vector<int>& botTypes) {
     for (int i = 0; i < numBots; i++) { bots.push_back(new ValueInvestorBot(i)); botTypes.push_back(0); }
-    // for (int i = 0; i < numBots; i++) { bots.push_back(new TrendFollowerBot(numBots+i)); botTypes.push_back(1); }
-    // for (int i = 0; i < numBots; i++) { bots.push_back(new StopLossBot(2*numBots+i)); botTypes.push_back(2); }
-    // for (int i = 0; i < numBots; i++) { bots.push_back(new MarketMakerBot(3*numBots+i)); botTypes.push_back(3); }
-    // for (int i = 0; i < numBots; i++) { bots.push_back(new NoiseBot(4*numBots+i)); botTypes.push_back(4); }
+    for (int i = 0; i < numBots; i++) { bots.push_back(new TrendFollowerBot(numBots+i)); botTypes.push_back(1); }
+    for (int i = 0; i < numBots; i++) { bots.push_back(new StopLossBot(2*numBots+i)); botTypes.push_back(2); }
+    for (int i = 0; i < numBots; i++) { bots.push_back(new MarketMakerBot(3*numBots+i)); botTypes.push_back(3); }
+    for (int i = 0; i < numBots; i++) { bots.push_back(new NoiseBot(4*numBots+i)); botTypes.push_back(4); }
 };
-
 
 std::vector<TradeOrder> collectOrders(const std::vector<Bot*>& bots, const MarketTick& tick) {
     std::vector<TradeOrder> orders;
@@ -28,7 +31,6 @@ std::vector<TradeOrder> collectOrders(const std::vector<Bot*>& bots, const Marke
 void processOrders(MarketTick& tick,
                    std::vector<TradeOrder>& orders,
                    std::vector<Bot*>& bots, float& pulse) {
-    std::cout << "--- Processing Orders ---\n";
     std::cout << "Initial orders count: " << orders.size() << "\n";
 
     // --- Decrement TTL and remove expired ---
@@ -37,8 +39,6 @@ void processOrders(MarketTick& tick,
                        [](TradeOrder& o) { return --o.ttl < 0; }),
         orders.end()
     );
-
-    std::cout << "Orders after TTL check: " << orders.size() << "\n";
 
     // --- Split into buys and sells ---
     std::vector<TradeOrder> buyOrders;
@@ -49,28 +49,11 @@ void processOrders(MarketTick& tick,
         else if (order.type == TradeType::SELL) sellOrders.push_back(order);
     }
 
-    std::cout << "Buy orders: " << buyOrders.size() << ", Sell orders: " << sellOrders.size() << "\n";
-
     // --- Sort orders ---
     std::sort(buyOrders.begin(), buyOrders.end(),
               [](const TradeOrder& a, const TradeOrder& b) { return a.price > b.price; });
     std::sort(sellOrders.begin(), sellOrders.end(),
               [](const TradeOrder& a, const TradeOrder& b) { return a.price < b.price; });
-
-
-    std::cout << "--- Sorted Buy Orders ---\n";
-    for (const auto& order : buyOrders) {
-        std::cout << "Bot " << order.botId 
-                << " Buy " << order.amount 
-                << " @ " << order.price << "\n";
-    }
-
-    std::cout << "--- Sorted Sell Orders ---\n";
-    for (const auto& order : sellOrders) {
-        std::cout << "Bot " << order.botId 
-                << " Sell " << order.amount 
-                << " @ " << order.price << "\n";
-    }
 
     size_t buyIdx = 0, sellIdx = 0;
 
@@ -78,9 +61,6 @@ void processOrders(MarketTick& tick,
     while (buyIdx < buyOrders.size() && sellIdx < sellOrders.size()) {
         TradeOrder &buy = buyOrders[buyIdx];
         TradeOrder &sell = sellOrders[sellIdx];
-
-        std::cout << "Attempting match: Buy(bot " << buy.botId << ", " << buy.amount << "@" << buy.price << ") "
-                  << "Sell(bot " << sell.botId << ", " << sell.amount << "@" << sell.price << ")\n";
 
         if (buy.price >= sell.price) {
             int tradeAmount = std::min(buy.amount, sell.amount);
@@ -98,8 +78,6 @@ void processOrders(MarketTick& tick,
             alpha = std::min(alpha, 0.05); // cap max price change per trade to 5%
             tick.lastPrice = tick.lastPrice * (1 - alpha) + executedPrice * alpha;
 
-            std::cout << "Trade executed: " << executed << " shares at " << executedPrice << "\n";
-
             // Update bots
             bots[buy.botId]->applyTrade(tradeBuy, executed, executedPrice);
             bots[sell.botId]->applyTrade(sell, executed, executedPrice);
@@ -108,24 +86,13 @@ void processOrders(MarketTick& tick,
             buy.amount -= tradeAmount;
             sell.amount -= tradeAmount;
 
-            std::cout << "Remaining Buy amount: " << buy.amount << ", Remaining Sell amount: " << sell.amount << "\n";
-
             // Move to next order if fully filled
             if (buy.amount <= 0) buyIdx++;
             if (sell.amount <= 0) sellIdx++;
         } else {
-            std::cout << "No more compatible orders (Buy price < Sell price)\n";
             break;
         }
     }
-
-    // Remaining unmatched orders
-    if (buyIdx < buyOrders.size() || sellIdx < sellOrders.size()) {
-        std::cout << "Unmatched orders remain: "
-                  << "BuyIdx=" << buyIdx << "/" << buyOrders.size()
-                  << ", SellIdx=" << sellIdx << "/" << sellOrders.size() << "\n";
-    }
-    std::cout << "--- End Processing ---\n";
 }
 
 void updateMarket(MarketTick& tick, int pulse) {
@@ -136,10 +103,7 @@ void updateMarket(MarketTick& tick, int pulse) {
     if (tick.ask > tick.lastPrice + 0.005) tick.ask -= 0.001;
 }
 
-void recordHistory(const std::vector<Bot*>& bots,
-                   std::vector<std::vector<double>>& botHistory,
-                   std::vector<double>& marketHistory,
-                   const MarketTick& tick) {
+void recordHistory(const std::vector<Bot*>& bots, std::vector<std::vector<double>>& botHistory, std::vector<double>& marketHistory, const MarketTick& tick) {
     marketHistory.push_back(tick.lastPrice);
 
     for (int i = 0; i < bots.size(); i++) {
@@ -147,26 +111,30 @@ void recordHistory(const std::vector<Bot*>& bots,
     }
 }
 
-void runSimulation(int numTicks, MarketTick& tick,
-                   std::vector<Bot*>& bots,
-                   std::vector<std::vector<double>>& botHistory,
-                   std::vector<double>& marketHistory,
-                   std::mt19937& g) {
-    for (int t = 0; t < numTicks; t++) {
-        std::cout << "Tick " << t << ", LastPrice: " << tick.lastPrice
-                  << ", Volume: " << tick.volume << "\n";
+void runSimulation(int numTicks, MarketTick& tick, std::vector<Bot*>& bots, std::vector<std::vector<double>>& botHistory, std::vector<double>& marketHistory) {
+  for (int t = 0; t < numTicks; t++) {
+    std::cout << "Tick " << t << ", LastPrice: " << tick.lastPrice
+              << ", Volume: " << tick.volume << "\n";
 
-        auto orders = collectOrders(bots, tick);
-        float pulse = 0;
-        processOrders(tick, orders, bots, pulse);
-        updateMarket(tick, pulse);
-        recordHistory(bots, botHistory, marketHistory, tick);
-    }
+    auto orders = collectOrders(bots, tick);
+    float pulse = 0;
+    processOrders(tick, orders, bots, pulse);
+    updateMarket(tick, pulse);
+    recordHistory(bots, botHistory, marketHistory, tick);
+  }
 }
 
 
-void saveCSV(int numTicks, int numTypes, std::string CSV_File, std::vector<int>& botTypes, std::vector<Bot*>& bots, std::vector<std::vector<double>>& botHistory, std::vector<double>& marketHistory) {
+void saveCSV(int numTicks, int numTypes, std::string& CSV_File, std::vector<int>& botTypes, std::vector<Bot*>& bots, std::vector<std::vector<double>>& botHistory, std::vector<double>& marketHistory) {
+    std::cout << "BEFORE CSV IN" << std::endl;
     std::ofstream summary(CSV_File);
+   std::cout << "AFTER CSV IN" << std::endl;
+    if (!summary.is_open()) {
+        std::cout << "ERROR: Could not open CSV file: " << CSV_File << std::endl;
+        return;
+    }
+    std::cout << "HERE" << std::endl;
+
     summary << "tick,lastPrice";
     std::vector<std::string> typeNames = {"ValueInvestor","TrendFollower","StopLoss","MarketMaker","Noise"};
     for (auto &name : typeNames) summary << ",best_" << name << ",worst_" << name << ",avg_" << name;
@@ -190,6 +158,7 @@ void saveCSV(int numTicks, int numTypes, std::string CSV_File, std::vector<int>&
         summary << "\n";
     }
 
+    std::cout << "SAVING CSV" << std::endl;
     summary.close();
 }
 

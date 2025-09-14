@@ -1,6 +1,8 @@
 #pragma once
 #include "trade.hpp"
 #include <random>
+#include <algorithm>
+#include <cmath>
 
 struct Bot {
     double cash = 500.0;

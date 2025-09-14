@@ -4,10 +4,9 @@
 
 int main() {
     srand(time(0));
-    std::mt19937 g(rand());
 
     int numTicks = 200;
-    int totalBots = 250;
+    int totalBots = 50;
     float bid = 4.99, ask = 5.01, price = 5.00;
     std::string CSV_FILE = "portfolio_summary.csv";
 
@@ -23,8 +22,10 @@ int main() {
     std::vector<std::vector<double>> botHistory(bots.size());
     std::vector<double> marketHistory;
 
-    runSimulation(numTicks, tick, bots, botHistory, marketHistory, g);
+    runSimulation(numTicks, tick, bots, botHistory, marketHistory);
+    std::cout << "Simulation Completed" << std::endl;
     saveCSV(numTicks, numTypes, CSV_FILE, botTypes, bots, botHistory, marketHistory);
+    std::cout << "Data Saved to CSV File" << std::endl;
 
     cleanup(bots);
     return 0;

@@ -1,5 +1,5 @@
 #pragma once
-#include <bot.hpp>
+#include "bot.hpp"
 
 struct NoiseBot : public Bot {
    int buyChance;

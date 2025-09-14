@@ -19,17 +19,17 @@ TradeOrder NoiseBot::decide(const MarketTick &tick) {
 
   int rBuy  = hundredDist(rng);
   int rSell = hundredDist(rng);
-  double adjustment = adjustmentDist(rng); // ±0.01
+  double adjustment = adjustmentDist(rng);
 
   if (rBuy < buyChance && cash >= tick.ask) {
       order.type = TradeType::BUY;
       order.amount = std::min(maxBuy, static_cast<int>(cash / tick.ask));
-      order.price = tick.ask - adjustment; // buy slightly below ask
+      order.price = tick.ask - adjustment;
   }
   else if (holdings > 0 && rSell < sellChance) {
       order.type = TradeType::SELL;
       order.amount = std::min(maxSell, holdings);
-      order.price = tick.bid + adjustment; // sell slightly above bid
+      order.price = tick.bid + adjustment;
   }
 
   return order;
