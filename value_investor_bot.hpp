@@ -1,6 +1,5 @@
 #pragma once
 #include "bot.hpp"
-#include <random>
 
 struct ValueInvestorBot : public Bot {
     double profitMargin;

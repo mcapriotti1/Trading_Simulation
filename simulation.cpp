@@ -2,6 +2,7 @@
 #include "value_investor_bot.hpp"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <numeric>
 
 void createBots(int numBots, std:: vector<Bot*>& bots, std::vector<int>& botTypes) {
