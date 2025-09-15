@@ -28,15 +28,17 @@ The simulation records the last price and the portfolio value (cash + holdings Ã
 
 ## Simulation Example
 - Displays best and average portfolio value over time for all bot types and ticker price.
-- Plots different bot types with best, worst, and average portfolio.
-<div style="display: flex; justify-content: center; gap: 10px;">
+<div>
   <img src="demos/TradingSimulationBotComparisonDisplay.png" 
      alt="Demo Screenshot" 
-     style="display: block; margin: 0 auto; width: 45%;">
+     style="display: block; margin: 0 auto; width: 65%;">
+</div>
+
+- Plots different bot types with best, worst, and average portfolio.
+<div>
   <img src="demos/TradingSimulationBotsDisplay.png" 
      alt="Demo Screenshot" 
-     style="display: block; margin: 0 auto; width: 45%;">
-  
+     style="display: block; margin: 0 auto; width: 65%;">
 </div>
 
 Running Instructions
