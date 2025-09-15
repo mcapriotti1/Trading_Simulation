@@ -26,20 +26,18 @@ The simulation records the last price and the portfolio value (cash + holdings Ã
 
 **5. Noise:** Trades randomly with stochastic buy/sell chances and varying amounts to simulate market noise.
 
-## Demos
-
-### Overview
+## Simulation Example
 - Displays best and average portfolio value over time for all bot types and ticker price.
-<div style="text-align: center">
-  <img src="visual/simulations/simulation1/bot_comparison.pdf" 
-     alt="Demo Screenshot" 
-     style="display: block; margin: 0 auto;">
-</div>
-![Overview](visual/simulations/simulation1/bot_comparison.pdf)
-
-### Bot-Specific
 - Plots different bot types with best, worst, and average portfolio.
-![Bot-Specific](visual/simulations/simulation1/bots.pdf)
+<div style="display: flex; justify-content: center; gap: 10px;">
+  <img src="demos/TradingSimulationBotComparisonDisplay.png" 
+     alt="Demo Screenshot" 
+     style="display: block; margin: 0 auto; width: 45%;">
+  <img src="demos/TradingSimulationBotsDisplay.png" 
+     alt="Demo Screenshot" 
+     style="display: block; margin: 0 auto; width: 45%;">
+  
+</div>
 
 Running Instructions
 
