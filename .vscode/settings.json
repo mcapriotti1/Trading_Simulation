@@ -47,6 +47,13 @@
     "xstddef": "cpp",
     "xstring": "cpp",
     "xtr1common": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "complex": "cpp",
+    "mutex": "cpp",
+    "ratio": "cpp",
+    "sstream": "cpp",
+    "stop_token": "cpp",
+    "string": "cpp",
+    "thread": "cpp"
   }
 }

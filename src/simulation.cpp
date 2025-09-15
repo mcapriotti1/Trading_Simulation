@@ -87,7 +87,7 @@ void processOrders(MarketTick& tick, std::vector<TradeOrder>& orders, std::vecto
   }
 }
 
-void updateMarket(MarketTick& tick, int pulse) {
+void updateMarket(MarketTick& tick) {
   double drift = ((rand() % 3) - 1) * 0.1;
   tick.lastPrice += drift;
   if (tick.bid < tick.lastPrice - 0.005) tick.bid += 0.001;
@@ -109,7 +109,7 @@ void runSimulation(int numTicks, MarketTick& tick, std::vector<Bot*>& bots, std:
     auto orders = collectOrders(bots, tick);
     float pulse = 0;
     processOrders(tick, orders, bots);
-    updateMarket(tick, pulse);
+    updateMarket(tick);
     recordHistory(bots, botHistory, marketHistory, tick);
   }
 }
