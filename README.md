@@ -13,55 +13,33 @@ The simulation starts with 500 bots (100 of each type) and an initial market sta
 
 After all bots submit orders, they are collected into an order book sorted by price. Individual units are then matched by pairing the highest bid with the lowest ask, executing trades that adjust the last price based on the order price. Once all possible trades are executed, the market undergoes a small random drift, finalizing the last price for that tick.
 
-The simulation records the last price and the portfolio value (cash + holdings × last price) for every bot at each tick. This process repeats until the tick limit (2,000 ticks) is reached. The parameters (number of bots, tick limit, etc.) were chosen via trial and error to produce a market that is dynamic yet relatively stable.
-
-### The Bots
-
-The 5 trading bots implemented were a Value Investor, Stop Loss, Trend Follower, Market Maker, and Noise. 
-**1. Value Investor:** Buys when the price is below their target and sells when above, using a randomized profit margin.
-
+The simulation records the last price and the portfolio value (cash + holdings × last price) for every bot at each tick. This process repeats until the tick limit (2,000 ticks) is reached. The parameters (number of bots, tick limit, etc.) were chosen via trial and error to produce a market that is dynamic yet relatively stable. The ticker price as well as  best, worst, and average of each type of bot are calculated from the simulation records which are exported as a CSV file visualized with Matplotlib.
 
 ### Trading Bots
-**1. Value Investor:** a
+**1. Value Investor:** Buys when the price is below their target and sells when above, using a randomized profit margin.
 
-**2. Trend Follower:** b
+**2. Trend Follower:** Observes a randomized memory window of past ticks to follow upward or downward trends, adjusting buy/sell decisions accordingly.
 
-**3. Stop Loss:** c
+**3. Stop Loss:** Tracks the highest price seen and sells if the price drops below a randomized threshold.
 
-**4. Market Maker:** d
+**4. Market Maker:** Places buy/sell orders around the current market price, adjusting spread and order size randomly.
 
-**5. Noise:** e
+**5. Noise:** Trades randomly with stochastic buy/sell chances and varying amounts to simulate market noise.
 
-Buys when the price is below their target and sells when above, using a randomized profit margin.
+## Demos
 
-Trend Follower: Observes a memory window of past ticks to follow upward or downward trends, adjusting buy/sell decisions accordingly.
+### Overview
+- Displays best and average portfolio value over time for all bot types and ticker price.
+<div style="text-align: center">
+  <img src="visual/simulations/simulation1/bot_comparison.pdf" 
+     alt="Demo Screenshot" 
+     style="display: block; margin: 0 auto;">
+</div>
+![Overview](visual/simulations/simulation1/bot_comparison.pdf)
 
-Stop Loss: Tracks the highest price seen and sells if the price drops below a threshold.
-
-Market Maker: Places buy/sell orders around the current market price, adjusting spread and order size randomly.
-
-Noise Bot: Trades randomly with stochastic buy/sell chances and varying amounts to simulate market noise.
-
-Each bot generates orders with Time-To-Live (TTL) and amounts, and the market maintains an order book sorted by highest buy and lowest sell prices. The simulation records:
-
-Ticker history (last price at each tick)
-
-Portfolio performance for each bot type (best, worst, and average)
-
-Results are exported as CSV files, which can be visualized using Python and Matplotlib for portfolio comparisons and market evolution.
-
-Demos
-
-Portfolio Overview
-Displays best, worst, and average portfolio value over time for all bot types.
-
-Market Price Evolution
-Shows the ticker price trajectory over the simulation period.
-
-Bot-Specific Behavior
-Plots highlighting how different bot types react to market conditions (trend-following, stop-loss triggers, noise trading, etc.)
-
-(You can insert screenshots here if desired.)
+### Bot-Specific
+- Plots different bot types with best, worst, and average portfolio.
+![Bot-Specific](visual/simulations/simulation1/bots.pdf)
 
 Running Instructions
 
