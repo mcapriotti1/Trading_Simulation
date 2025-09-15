@@ -1,6 +1,8 @@
 # Trading_Simulation
----
+
 A C++ single ticker market simulation with 5 variations of trading bots. Every tick a bot can submit a single order, which is placed and executed (if possible) into a price sorted order book. Every bot's portfolio is tracked throughout the simulation, and the best, worst, and average for each type of bot is saved and plotted.
+
+---
 
 ## About the Project
 
