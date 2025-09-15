@@ -58,5 +58,5 @@ def plotAll(data, file):
 
 if __name__ == "__main__":
   df = pd.read_csv(CSV_PATH)
-  folder = "plots/"
+  folder = "visual/simulations/"
   plotAll(df, folder)
