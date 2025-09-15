@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CSV_PATH = "portfolio_summary.csv"
+CSV_PATH = "portfolioSummary.csv"
 
 def plotPortfolio(data):
     plt.figure(figsize=(12,6))
@@ -27,6 +27,9 @@ def seperatePlotPortfolio(data, folder):
       plt.ylabel("Portfolio Value")
       plt.legend()
   plt.tight_layout()
+  plt.subplots_adjust(top=0.92)
+  plt.tight_layout(rect=[0, 0.05, 1, 0.92])
+  plt.subplots_adjust(hspace=1)
   plt.savefig(folder + "/bots.pdf")
 
 

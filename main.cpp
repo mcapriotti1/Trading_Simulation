@@ -5,10 +5,10 @@
 int main() {
     srand(time(0));
 
-    int numTicks = 200;
-    int totalBots = 5000;
+    int numTicks = 100;
+    int totalBots = 500;
     float bid = 4.99, ask = 5.01, price = 5.00;
-    std::string CSV_FILE = "portfolio_summary.csv";
+    std::string CSV_FILE = "portfolioSummary.csv";
 
     int numBots = totalBots / 5;
     int numTypes = 5;
