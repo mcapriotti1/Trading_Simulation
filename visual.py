@@ -19,28 +19,61 @@ def seperatePlotPortfolio(data, folder):
   plt.figure(figsize=(12, 15))
   for i, bot_type in enumerate(typeNames):
       plt.subplot(len(typeNames), 1, i+1)
-      plt.plot(data["tick"], data[f"best_{bot_type}"], label="Best", color="green")
-      plt.plot(data["tick"], data[f"worst_{bot_type}"], label="Worst", color="red")
-      plt.plot(data["tick"], data[f"avg_{bot_type}"], label="Average", color="blue")
+      plt.plot(data["tick"], data[f"best_{bot_type}"], label="Best")
+      plt.plot(data["tick"], data[f"worst_{bot_type}"], label="Worst")
+      plt.plot(data["tick"], data[f"avg_{bot_type}"], label="Average")
       plt.title(bot_type)
       plt.xlabel("Tick")
       plt.ylabel("Portfolio Value")
       plt.legend()
   plt.tight_layout()
-  plt.savefig(folder + "/bots")
+  plt.savefig(folder + "/bots.pdf")
 
 def plotTickers(data, folder):
     plt.figure(figsize=(12,4))
-    plt.plot(data["tick"], data["lastPrice"], label="Market Price")
     plt.xlabel("Tick")
     plt.ylabel("Price")
     plt.title("Market Price over Time")
     plt.legend()
-    plt.savefig(folder + "/market")
+    plt.savefig(folder + "/market.pdf")
 
 def plotAll(data, file):
     seperatePlotPortfolio(data, folder)
     plotTickers(data, folder)
+    plotBotComparison(data, folder)
+
+
+
+
+def plotBotComparison(data, folder="plots"):
+    typeNames = ["ValueInvestor","TrendFollower","StopLoss","MarketMaker","Noise"]
+    
+    fig, axes = plt.subplots(3, 1, figsize=(12, 15), sharex=True)
+
+    # --- Plot 1: Best of each bot ---
+    for bot_type in typeNames:
+        axes[0].plot(data["tick"], data[f"best_{bot_type}"], label=bot_type)
+    axes[0].set_ylabel("Portfolio Value")
+    axes[0].set_title("Best Portfolio of Each Bot Type")
+    axes[0].legend()
+
+    # --- Plot 2: Average of each bot ---
+    for bot_type in typeNames:
+        axes[1].plot(data["tick"], data[f"avg_{bot_type}"], label=bot_type)
+    axes[1].set_ylabel("Portfolio Value")
+    axes[1].set_title("Average Portfolio of Each Bot Type")
+    axes[1].legend()
+
+    # --- Plot 3: Market price ---
+    axes[2].plot(data["tick"], data["lastPrice"], label="Market Price", color="black")
+    axes[2].set_xlabel("Tick")
+    axes[2].set_ylabel("Price")
+    axes[2].set_title("Market Price Over Time")
+    axes[2].legend()
+
+    plt.tight_layout()
+    plt.savefig(f"{folder}/bot_comparison.pdf")
+    plt.show()
 
 if __name__ == "__main__":
     df = pd.read_csv(CSV_PATH)

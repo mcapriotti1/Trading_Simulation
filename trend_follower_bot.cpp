@@ -4,18 +4,19 @@
 TrendFollowerBot::TrendFollowerBot(int id_) 
   : Bot(id_),
     rng(std::random_device{}() ^ (id_ << 16)),
-    biasDist(0.6, 0.2),
-    jitterDist(0.0, 0.2),
-    memoryDist(6.0, 2.0)
+    biasDist(0.2, 0.1),
+    jitterDist(10, 10),
+    memoryDist(10, 8)
 {
   buyBias = std::clamp(biasDist(rng), 0.2, 0.95);
   sellBias = std::clamp(biasDist(rng), 0.2, 0.95);
   memoryWindow = std::clamp(static_cast<int>(std::round(memoryDist(rng))), 3, 20);
   jitter = jitterDist(rng);
+
 }
 
 TradeOrder TrendFollowerBot::decide(const MarketTick &tick) {
-  TradeOrder order{TradeType::BUY, 0, 0.0, id, 1};
+  TradeOrder order{TradeType::BUY, 0, 0.0, id, getRandomTTL()};
     
   // --- Update memory ---
   priceHistory.push_back(tick.lastPrice);

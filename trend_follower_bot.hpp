@@ -7,6 +7,7 @@ struct TrendFollowerBot: public Bot {
   double sellBias;
   int memoryWindow;
   double jitter;
+  int ttl;
 
   std::deque<double> priceHistory;
 
@@ -14,7 +15,7 @@ struct TrendFollowerBot: public Bot {
   std::normal_distribution<double> biasDist;
   std::normal_distribution<double> jitterDist;
   std::normal_distribution<double> memoryDist;
-
+  
   TrendFollowerBot(int id_);
   TradeOrder decide(const MarketTick &tick) override;
 };

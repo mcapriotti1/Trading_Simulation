@@ -6,7 +6,7 @@ int main() {
     srand(time(0));
 
     int numTicks = 200;
-    int totalBots = 50;
+    int totalBots = 500;
     float bid = 4.99, ask = 5.01, price = 5.00;
     std::string CSV_FILE = "portfolio_summary.csv";
 
@@ -17,7 +17,7 @@ int main() {
     std::vector<int> botTypes;
     createBots(numBots, bots, botTypes);
 
-    MarketTick tick = {bid, ask, price, 10000};
+    MarketTick tick = {bid, ask, price, 50000};
 
     std::vector<std::vector<double>> botHistory(bots.size());
     std::vector<double> marketHistory;

@@ -10,7 +10,13 @@ struct Bot {
     double avgPurchasePrice = 5.0;
     int id;
 
-    Bot(int id_) : id(id_) {}
+    std::mt19937 rng;
+    std::uniform_int_distribution<int> ttlDist;
+
+    Bot(int id_) : 
+                    id(id_),
+                    rng(std::random_device{}() ^ (id_ << 16)),
+                    ttlDist(1,3) {}
     virtual ~Bot() {}
 
     virtual TradeOrder decide(const MarketTick &tick) = 0;
@@ -18,4 +24,6 @@ struct Bot {
     virtual void applyTrade(const TradeOrder &order, int executed, double price);
 
     double portfolioValue(const MarketTick &tick) const;
+
+    int getRandomTTL() { return ttlDist(rng); }
 };

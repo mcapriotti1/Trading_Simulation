@@ -19,7 +19,7 @@ StopLossBot::StopLossBot(int id_)
 
 
 TradeOrder StopLossBot::decide(const MarketTick &tick) {
-  TradeOrder order{TradeType::BUY, 0, 0.0, id, 1};
+  TradeOrder order{TradeType::BUY, 0, 0.0, id, getRandomTTL()};
 
   if (holdings > 0) {
       highestPriceSeen = std::max(highestPriceSeen, tick.lastPrice);

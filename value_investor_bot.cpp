@@ -14,7 +14,7 @@ ValueInvestorBot::ValueInvestorBot(int id_)
 }
 
 TradeOrder ValueInvestorBot::decide(const MarketTick &tick) {
-  TradeOrder order{TradeType::BUY, 0, 0.0, id, 1};
+  TradeOrder order{TradeType::BUY, 0, 0.0, id, getRandomTTL()};
     
   double sellScore = (holdings > 0) ? (tick.lastPrice - avgPurchasePrice) / avgPurchasePrice : -1.0;
   double buyScore = (cash >= tick.ask) ? (avgPurchasePrice - tick.lastPrice) / avgPurchasePrice : -1.0;
