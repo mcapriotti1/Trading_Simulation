@@ -18,19 +18,18 @@ TrendFollowerBot::TrendFollowerBot(int id_)
 TradeOrder TrendFollowerBot::decide(const MarketTick &tick) {
   TradeOrder order{TradeType::BUY, 0, 0.0, id, getRandomTTL()};
     
-  // --- Update memory ---
+  // Memory of past prices
   priceHistory.push_back(tick.lastPrice);
   if ((int)priceHistory.size() > memoryWindow)
       priceHistory.pop_front();
 
-  // --- Evaluate price trend ---
+  // Trend
   int rises = 0, falls = 0;
   for (size_t i = 1; i < priceHistory.size(); ++i) {
       if (priceHistory[i] > priceHistory[i-1]) rises++;
       else if (priceHistory[i] < priceHistory[i-1]) falls++;
   }
 
-  // --- Trading logic based on observed trend ---
   if (rises >= static_cast<int>(memoryWindow * buyBias) && cash >= tick.ask) {
       int maxAffordable = static_cast<int>(cash / tick.ask);
       order.type = TradeType::BUY;

@@ -10,7 +10,8 @@ ValueInvestorBot::ValueInvestorBot(int id_)
     rng(std::random_device{}())
 {
   avgPurchasePrice = std::max(0.5, priceDist(rng));
-  profitMargin = std::clamp(marginDist(rng), 0.01, 0.3);
+  // 1 - 10% Profit Margin
+  profitMargin = std::clamp(marginDist(rng), 0.01, 0.1);
 }
 
 TradeOrder ValueInvestorBot::decide(const MarketTick &tick) {
