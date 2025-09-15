@@ -41,7 +41,33 @@ The simulation records the last price and the portfolio value (cash + holdings Ã
      style="display: block; margin: 0 auto; width: 65%;">
 </div>
 
-Running Instructions
+## Running Instructions
 
-Clone the Repository
+### 1. Clone the Repository
+```bash
+git clone https://github.com/mcapriotti1/Trading_Simulation.git
+cd Trading_Simulation
+```
 
+### 2. Build the C++ Simulation
+
+Make sure you have g++ installed (C++17 or higher). Then run:
+
+```bash
+g++ -std=c++17 -g *.cpp -o trading_sim.exe
+```
+
+### 3. Run the Simulation
+
+``` bash
+./trading_sim.exe
+```
+
+This will generate CSV files in the output/ folder containing
+
+### 4. Plot the Results
+
+```bash
+pip install -r requirements.txt
+python plot_results.py
+```
