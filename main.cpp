@@ -6,7 +6,7 @@ int main() {
     srand(time(0));
 
     int numTicks = 200;
-    int totalBots = 500;
+    int totalBots = 5000;
     float bid = 4.99, ask = 5.01, price = 5.00;
     std::string CSV_FILE = "portfolio_summary.csv";
 

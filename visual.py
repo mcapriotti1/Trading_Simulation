@@ -29,21 +29,10 @@ def seperatePlotPortfolio(data, folder):
   plt.tight_layout()
   plt.savefig(folder + "/bots.pdf")
 
-def plotTickers(data, folder):
-    plt.figure(figsize=(12,4))
-    plt.xlabel("Tick")
-    plt.ylabel("Price")
-    plt.title("Market Price over Time")
-    plt.legend()
-    plt.savefig(folder + "/market.pdf")
 
 def plotAll(data, file):
     seperatePlotPortfolio(data, folder)
-    plotTickers(data, folder)
     plotBotComparison(data, folder)
-
-
-
 
 def plotBotComparison(data, folder="plots"):
     typeNames = ["ValueInvestor","TrendFollower","StopLoss","MarketMaker","Noise"]

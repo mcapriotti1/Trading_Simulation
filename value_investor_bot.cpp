@@ -19,15 +19,15 @@ TradeOrder ValueInvestorBot::decide(const MarketTick &tick) {
   double sellScore = (holdings > 0) ? (tick.lastPrice - avgPurchasePrice) / avgPurchasePrice : -1.0;
   double buyScore = (cash >= tick.ask) ? (avgPurchasePrice - tick.lastPrice) / avgPurchasePrice : -1.0;
   double adjustment = adjustmentDist(rng);
+  int maxAffordable = static_cast<int>(cash / tick.ask);
 
   if (buyScore > profitMargin && buyScore >= sellScore) {
-      int maxAffordable = static_cast<int>(cash / tick.ask);
-      int buyAmount = std::max(1, int(maxAffordable * buyScore));
+      int buyAmount = std::min(maxAffordable, int(maxAffordable / 2));
       order.type = TradeType::BUY;
       order.amount = buyAmount;
       order.price = tick.ask + adjustment;
   } else if (sellScore > profitMargin) {
-      int sellAmount = std::max(1, int(holdings * sellScore));
+      int sellAmount = std::min(maxAffordable, int(holdings / 2));
       order.type = TradeType::SELL;
       order.amount = sellAmount;
       order.price = tick.bid + adjustment;
